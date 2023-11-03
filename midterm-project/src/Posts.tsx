@@ -8,6 +8,8 @@ export const Posts = () => {
     const [editPostId, setEditPostId] = useState(null);
     const [editedTitle, setEditedTitle] = useState("");
     const [editedBody, setEditedBody] = useState("");
+    const [newPostTitle, setNewPostTitle] = useState("");
+    const [newPostBody, setNewPostBody] = useState("");
 
     const handleButtonClick = (id: number, type: 'like' | 'dislike' | 'delete' | 'edit' | 'save') => {
         let updatedPostsList;
@@ -50,10 +52,37 @@ export const Posts = () => {
         }
     };
 
+    const handleAddPost = () => {
+        const newPost = {
+            id: Math.max(...postsList.map(post => post.id), 0) + 1,  // Get the next available id
+            title: newPostTitle,
+            body: newPostBody,
+            likes: 0,
+            dislikes: 0,
+        };
+        setPostsList([...postsList, newPost]);
+        setNewPostTitle("");
+        setNewPostBody("");
+    };
+
     return (
         <div className="container">
             <Header />
             <h1>Posts</h1>
+            <div className="new-post">
+                <input
+                    type="text"
+                    placeholder="Title"
+                    value={newPostTitle}
+                    onChange={(e) => setNewPostTitle(e.target.value)}
+                />
+                <textarea
+                    placeholder="Body"
+                    value={newPostBody}
+                    onChange={(e) => setNewPostBody(e.target.value)}
+                />
+                <button onClick={handleAddPost}>Add Post</button>
+            </div>
             <div>
             {postsList.map((post) => (
                 <div key={post.id}>
@@ -79,8 +108,6 @@ export const Posts = () => {
                     <div>
                         <button onClick={() => handleButtonClick(post.id, 'like')}>Like: {post.likes}</button>
                         <button onClick={() => handleButtonClick(post.id, 'dislike')}>Dislike: {post.dislikes}</button>
-                        <button>Comment</button>
-                        <button>Share</button>
                         <button onClick={() => handleButtonClick(post.id, 'edit')}>Edit</button>
                         <button onClick={() => handleButtonClick(post.id, 'delete')}>Delete</button>
                         <hr />
